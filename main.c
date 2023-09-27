@@ -1,10 +1,8 @@
 #include <stdio.h>
-#include <stdint.h>
 
 // Preprocessor statement, not a global variable
 // Only using defines to have them easily updatable
 #define TAPE_LEN 32768
-#define PROGRAM_LEN 13
 
 /**
  * @brief Sanity is a basic sanity (syntax) checker for code loops
@@ -15,7 +13,7 @@ int sanity(const char* code) {    // const due to clang-tidy warnings
     int depth = 0;      // Current depth of loops
     int index = 0;      // Index of last loop open
 
-    for (int i = 0; i < PROGRAM_LEN; ++i) {
+    for (int i = 0; code[i] != 0; ++i) {
         if (code[i] == '[') {
             depth++;
             index = i;
@@ -45,13 +43,13 @@ int main() {
     char programkod[] = "+[>,+]+[<-.]"; // Reverser
     //char programkod[]="[ThisprogramprintsSierpinskitriangleon80-columndisplay.]>++++[<++++++++>-]>++++++++[>++++<-]>>++>>>+>>>+<<<<<<<<<<[-[->+<]>[-<+>>>.<<]>>>[[->++++++++[>++++<-]>.<<[->+<]+>[->++++++++++<<+>]>.[-]>]]+<<<[-[->+<]+>[-<+>>>-[->+<]++>[-<->]<<<]<<<<]++++++++++.+++.[-]<]+++++*****Made*By:*NYYRIKKI*2002*****";
 
-    int8_t tape[TAPE_LEN] = {0};
-    int8_t *p = tape;
+    signed char tape[TAPE_LEN] = {0};
+    signed char *p = tape;
 
 
     if (sanity(programkod)) return 1;  // Sanity checker encountered an error
 
-    for (int i = 0; i < PROGRAM_LEN; ++i) {
+    for (int i = 0; programkod[i] != 0; ++i) {
 
         int depth = 1;
         switch (programkod[i]) {
@@ -59,7 +57,7 @@ int main() {
             case '+': ++*p; break;
             case '-': --*p; break;
             case '>':
-                if (++p <= tape + TAPE_LEN) break;
+                if (++p < tape + TAPE_LEN) break;
                 printf("\n[MOVER>] Error: Code ran off the tape!");
                 return 1;
 
